@@ -1,0 +1,11 @@
+[thanos-query-frontend]
+152.228.212.234
+
+[thanos-query]
+152.228.215.162
+
+[thanos-receiver]
+141.95.150.4
+
+[nginx-lb-query]
+152.228.213.200

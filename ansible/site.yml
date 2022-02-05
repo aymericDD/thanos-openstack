@@ -1,0 +1,38 @@
+---
+- name: Converge  thanos-query-frontend
+  hosts: thanos-query-frontend
+  roles:
+    - role: "thanos"
+      become: true
+      vars:
+        thanos_query_frontend: true
+        thanos_query_frontend_queries: >-
+          --query-frontend.downstream-url="http://{{ groups['thanos-query'][0] }}:{{ thanos_query_web_listen_port }}"
+  tags: thanos-query-frontend
+
+- name: Converge  thanos-query
+  hosts: thanos-query
+  roles:
+    - role: "thanos"
+      become: true
+      vars:
+        thanos_query: true
+        thanos_query_stores: >-
+          --store {{ groups['thanos-receiver'][0] }}:{{ thanos_receiver_grpc_listen_port }}
+  tags: thanos-query
+
+- name: Converge thanos-receiver
+  hosts: thanos-receiver
+  roles:
+    - role: "thanos"
+      become: true
+      vars:
+        thanos_receiver: true
+  tags: thanos-receiver
+
+- name: Converge nginx lb query
+  hosts: nginx-lb-query
+  roles:
+    - role: "geerlingguy.nginx"
+      become: true
+  tags: nginx-lb-query
