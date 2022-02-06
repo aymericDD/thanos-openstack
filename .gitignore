@@ -249,3 +249,4 @@ pip-selfcheck.json
 
 terraform/clouds.yaml
 clouds.yaml
+ansible/roles

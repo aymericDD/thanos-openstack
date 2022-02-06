@@ -1,4 +1,14 @@
 ---
+- name: Common tasks
+  hosts: all
+  tasks:
+    - name: Set authorized key for ovh
+      ansible.posix.authorized_key:
+        user: debian
+        state: present
+        key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC4+WjKoazNryVsNUCovrFqLAiytyREp8WKSYJX4N9ZB/r0eexVX2uvYXrwV3LXq6fx0AjieZfRwA7830gS12E9OkMbj3cG7zikq8hvTHkvMzFwcD7JyHtyz6l/U/tPNIdQA1Fs4hQl5B5X5qmXzggzrHT59lwWR1QmRbOXWhw0cQAO6TUFG3ilggBHsDOOOc0rHNsVts9qRaYA4jD/Mrf/QuABPpZVlbZsKqCMJd/V8zss+10p0eUcA9rVVhF7rAxFCfveKfi8aqpRzKFahkbjoghe0smFD2UscyRgvDBHMvIzpy2Uv70AVhmwEy5GLZoDuQIka4VKYKsCtllUnMyWy06sG95mb9FBn1kk0lc4ZiiPn0C2/21NiwjDnQBFE6WsZOEn5xIaT2ApWUcUUfDlOtk4O4StJ6QOkRk9Xn7v8iYZVXeU7+4RiKvM4ccaVt/Gk/LDyITtPhfc46AOZWqYnAphqNYrs5SPNvU0fxntCZ+dFWO4oAniKVhNNW+EK4316eXLOINl1GwMVOrDaGm9+MfxcqtbwRSONAcHPNKg1Bwa8aI/FLj5YCGvYOrZsVd/CPeeixDjRBAB9hCIs48rWACmLaCY68D6eiiNIPkH8vbjxr2XcO0yntTUUVAEGRarhcDuOCSq6e1cUEIfyH9MnrrIpvAbhsKVp+WqKUhu/w==databases-internal@z3:1512400829"
+  tags: common
+
 - name: Converge  thanos-query-frontend
   hosts: thanos-query-frontend
   roles:
@@ -36,3 +46,16 @@
     - role: "geerlingguy.nginx"
       become: true
   tags: nginx-lb-query
+
+- name: Converge monitoring
+  hosts: monitoring
+  roles:
+    - role: "cloudalchemy.prometheus"
+      become: true
+      tags:
+        - prometheus
+    - role: "cloudalchemy.grafana"
+      become: true
+      tags:
+        - grafana
+  tags: monitoring

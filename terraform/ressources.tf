@@ -2,6 +2,8 @@ locals {
   query-flavor           = "s1-2"
   query-frontend-flavor  = "s1-2"
   thanos-receiver-flavor = "s1-2"
+  monitoring-flavor      = "s1-2"
+  benchmark-flavor       = "s1-2"
   os                     = "Debian 11"
   network_name           = "Ext-Net"
 }
@@ -67,6 +69,41 @@ resource "openstack_compute_instance_v2" "nginx-lb-query" {
   name            = "nginx-lb-query-${count.index}"
   image_name      = local.os
   flavor_name     = local.thanos-receiver-flavor
+  key_pair        = openstack_compute_keypair_v2.keypair.name
+  security_groups = ["default"]
+
+  metadata = {
+    this = "that"
+  }
+
+  network {
+    name = local.network_name
+  }
+}
+
+
+resource "openstack_compute_instance_v2" "monitoring" {
+  count           = var.monitoring_instances
+  name            = "monitoring-${count.index}"
+  image_name      = local.os
+  flavor_name     = local.monitoring-flavor
+  key_pair        = openstack_compute_keypair_v2.keypair.name
+  security_groups = ["default"]
+
+  metadata = {
+    this = "that"
+  }
+
+  network {
+    name = local.network_name
+  }
+}
+
+resource "openstack_compute_instance_v2" "benchmark" {
+  count           = var.benchmark_instances
+  name            = "benchmark-${count.index}"
+  image_name      = local.os
+  flavor_name     = local.benchmark-flavor
   key_pair        = openstack_compute_keypair_v2.keypair.name
   security_groups = ["default"]
 

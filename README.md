@@ -35,7 +35,7 @@ Check all instances are created in horizon.
 
 - python 3.10
 - pipenv
-- You to manualy populate your inventory.
+- You have to manualy populate your inventory.
 To do that you have to get instances from horizon and then generate a invetory with this kind of strucutre :
 
 ``` yaml
@@ -50,6 +50,9 @@ To do that you have to get instances from horizon and then generate a invetory w
 
 [nginx-lb-query]
 152.228.213.200 # all instance with prefix : nginx-lb-query-*
+
+[monitoring]
+152.228.213.200 # all instance with prefix : monitoring-*
 ```
 
 ### How to deploy?
@@ -59,6 +62,8 @@ The debian user is created by default
 
 ``` yaml
 cd ansible
+pipenv sync
+pipenv shell
 ansible-galaxy install -r requirements.yml
 ansible-playbook -i inventory/hosts site.yml -u debian
 ```

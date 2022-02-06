@@ -1,0 +1,18 @@
+---
+prometheus_metrics_path: "/metrics"
+prometheus_scrape_configs:
+  - job_name: "thanos-receiver"
+    metrics_path: "{{ prometheus_metrics_path }}"
+    static_configs:
+      - targets: "{{ groups['thanos-receiver'] | product([':19191']) | map('join') | list  }}"
+  - job_name: "thanos-query"
+    metrics_path: "{{ prometheus_metrics_path }}"
+    static_configs:
+      - targets: "{{ groups['thanos-query'] | product([':19192']) | map('join') | list  }}"
+  - job_name: "thanos-query-frontend"
+    metrics_path: "{{ prometheus_metrics_path }}"
+    static_configs:
+      - targets: "{{ groups['thanos-query-frontend'] | product([':19196']) | map('join') | list  }}"
+
+prometheus_remote_write:
+  - url: "http://{{ groups['thanos-receiver'][0] }}:10908/api/v1/receive"

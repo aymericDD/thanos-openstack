@@ -18,8 +18,13 @@ variable "thanos_nginx_lb_query_instances" {
   default = 1
 }
 
-# variable "thanos_nginx_lb_receiver_instances" {
-#   type    = number
-#   default = 1
-# }
+variable "monitoring_instances" {
+  type    = number
+  default = 1
+}
+
+variable "benchmark_instances" {
+  type    = number
+  default = 1
+}
 
