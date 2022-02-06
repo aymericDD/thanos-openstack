@@ -1,0 +1,74 @@
+---
+- name: Restart query service
+  listen:
+    - restart thanos
+    - restart thanos-query
+  systemd:
+    name: thanos-query
+    state: restarted
+    daemon_reload: yes
+  when:
+    - thanos_query|bool
+    - ansible_service_mgr == 'systemd'
+
+- name: Restart ruler service
+  listen:
+    - restart thanos
+    - restart thanos-ruler
+  systemd:
+    name: thanos-ruler
+    state: restarted
+    daemon_reload: yes
+  when:
+    - thanos_ruler|bool
+    - ansible_service_mgr == 'systemd'
+
+- name: Restart receiver service
+  listen:
+    - restart thanos
+    - restart thanos-receiver
+  systemd:
+    name: thanos-receiver
+    state: restarted
+    daemon_reload: yes
+  when:
+    - thanos_receiver|bool
+    - ansible_service_mgr == 'systemd'
+
+- name: Restart query-frontend service
+  listen:
+    - restart thanos
+    - restart thanos-query-frontend
+  systemd:
+    name: thanos-query-frontend
+    state: restarted
+    daemon_reload: yes
+  when:
+    - thanos_query_frontend|bool
+    - ansible_service_mgr == 'systemd'
+
+- name: Restart store service
+  listen:
+    - restart thanos
+    - restart thanos-store
+    - restart thanos bucket
+  systemd:
+    name: thanos-store
+    state: restarted
+    daemon_reload: yes
+  when:
+    - thanos_store|bool
+    - ansible_service_mgr == 'systemd'
+
+- name: Restart compactor service
+  listen:
+    - restart thanos
+    - restart thanos-compactor
+    - restart thanos bucket
+  systemd:
+    name: thanos-compactor
+    state: restarted
+    daemon_reload: yes
+  when:
+    - thanos_compactor|bool
+    - ansible_service_mgr == 'systemd'

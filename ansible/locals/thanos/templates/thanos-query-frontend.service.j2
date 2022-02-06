@@ -1,0 +1,17 @@
+[Unit]
+Description=Thanos Query Frontend
+After=network.target
+
+[Service]
+Type=simple
+PIDFile={{ thanos_query_frontend_pid_path }}
+User={{ thanos_user }}
+Group={{ thanos_group }}
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStart={{ thanos_bin_dir }}/thanos query-frontend {{ thanos_query_frontend_flags }}
+
+SyslogIdentifier=thanos-query-frontend
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

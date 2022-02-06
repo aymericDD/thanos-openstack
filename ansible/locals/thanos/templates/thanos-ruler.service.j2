@@ -1,0 +1,17 @@
+[Unit]
+Description=Thanos ruler
+After=network.target
+
+[Service]
+Type=simple
+PIDFile={{ thanos_ruler_pid_path }}
+User={{ thanos_user }}
+Group={{ thanos_group }}
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStart={{ thanos_bin_dir }}/thanos rule {{ thanos_ruler_flags }}
+
+SyslogIdentifier=thanos-ruler
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

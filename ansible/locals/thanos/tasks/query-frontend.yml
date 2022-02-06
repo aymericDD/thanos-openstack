@@ -1,0 +1,50 @@
+---
+- name: Create query frontend systemd service unit
+  template:
+    src: thanos-query-frontend.service.j2
+    dest: /etc/systemd/system/thanos-query-frontend.service
+    owner: root
+    group: root
+    mode: 0644
+  when:
+    - thanos_query_frontend|bool
+  notify: restart thanos-query-frontend
+
+- name: Ensure thanos-query-frontend service is enabled
+  systemd:
+    daemon_reload: yes
+    name: thanos-query-frontend
+    enabled: yes
+  when:
+    - thanos_query_frontend|bool
+    - ansible_service_mgr == 'systemd'
+  notify: restart thanos-query-frontend
+
+- name: Check if Service Exists
+  stat:
+    path: /etc/systemd/system/thanos-query-frontend.service
+  register: service_status
+  when:
+    - not thanos_query_frontend
+    - thanos_remove_unused|bool
+
+- name: Stop thanos query
+  systemd:
+    name: thanos-query-frontend
+    state: stopped
+    enabled: yes
+    daemon_reload: yes
+  when:
+    - not thanos_query_frontend
+    - thanos_remove_unused|bool
+    - service_status.stat.exists
+    - ansible_service_mgr == 'systemd'
+
+- name: Remove thanos query
+  file:
+    path: /etc/systemd/system/thanos-query-frontend.service
+    state: absent
+  when:
+    - not thanos_query_frontend
+    - thanos_remove_unused|bool
+    - ansible_service_mgr == 'systemd'

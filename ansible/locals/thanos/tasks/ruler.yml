@@ -1,0 +1,50 @@
+---
+- name: Create ruler systemd service unit
+  template:
+    src: thanos-ruler.service.j2
+    dest: /etc/systemd/system/thanos-ruler.service
+    owner: root
+    group: root
+    mode: 0644
+  when:
+    - thanos_ruler|bool
+  notify: restart thanos-ruler
+
+- name: Ensure thanos-ruler service is enabled
+  systemd:
+    daemon_reload: yes
+    name: thanos-ruler
+    enabled: yes
+  when:
+    - thanos_ruler|bool
+    - ansible_service_mgr == 'systemd'
+  notify: restart thanos-ruler
+
+- name: Check if Service Exists
+  stat:
+    path: /etc/systemd/system/thanos-ruler.service
+  register: service_status
+  when:
+    - not thanos_ruler
+    - thanos_remove_unused|bool
+
+- name: Stop thanos ruler
+  systemd:
+    name: thanos-ruler
+    state: stopped
+    enabled: yes
+    daemon_reload: yes
+  when:
+    - not thanos_ruler
+    - thanos_remove_unused|bool
+    - service_status.stat.exists
+    - ansible_service_mgr == 'systemd'
+
+- name: Remove thanos ruler
+  file:
+    path: /etc/systemd/system/thanos-ruler.service
+    state: absent
+  when:
+    - not thanos_ruler
+    - thanos_remove_unused|bool
+    - ansible_service_mgr == 'systemd'

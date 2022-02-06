@@ -1,0 +1,34 @@
+---
+# tasks file for thanos
+
+- name: Install thanos
+  include_tasks: install.yml
+  tags: always
+
+- name: Thanos query frontend
+  include_tasks:
+    file: query-frontend.yml
+    apply:
+      tags: query-frontend
+  tags: query-frontend
+
+- name: Thanos query
+  include_tasks:
+    file: query.yml
+    apply:
+      tags: query
+  tags: query
+
+- name: Thanos receiver
+  include_tasks:
+    file: receiver.yml
+    apply:
+      tags: receiver
+  tags: receiver
+
+- name: Thanos ruler
+  include_tasks:
+    file: ruler.yml
+    apply:
+      tags: ruler
+  tags: ruler

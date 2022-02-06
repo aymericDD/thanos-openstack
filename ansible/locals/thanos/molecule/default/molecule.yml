@@ -1,0 +1,118 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+  - name: thanos-query-frontend
+    image: geerlingguy/docker-debian11-ansible:latest
+    pre_build_image: true
+    privileged: True
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    capabilities:
+      - SYS_ADMIN
+    command: "/lib/systemd/systemd"
+    groups:
+      - thanos-query-frontend
+    networks:
+      - name: thanos
+    published_ports:
+      - "9092:9090"
+  - name: thanos-query
+    image: geerlingguy/docker-debian11-ansible:latest
+    pre_build_image: true
+    privileged: True
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    capabilities:
+      - SYS_ADMIN
+    command: "/lib/systemd/systemd"
+    groups:
+      - thanos-query
+    networks:
+      - name: thanos
+    published_ports:
+      - "19192:19192"
+  - name: thanos-receiver
+    image: geerlingguy/docker-debian11-ansible:latest
+    pre_build_image: true
+    privileged: True
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    capabilities:
+      - SYS_ADMIN
+    command: "/lib/systemd/systemd"
+    groups:
+      - thanos-receiver
+    networks:
+      - name: thanos
+    published_ports:
+      - "10908:10908"
+      - "19191:19191"
+  - name: thanos-rulers
+    image: geerlingguy/docker-debian11-ansible:latest
+    pre_build_image: true
+    privileged: True
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    capabilities:
+      - SYS_ADMIN
+    command: "/lib/systemd/systemd"
+    groups:
+      - thanos-rulers
+    networks:
+      - name: thanos
+    published_ports:
+      - "19195:19195"
+  - name: thanos-rulers
+    image: geerlingguy/docker-debian11-ansible:latest
+    pre_build_image: true
+    privileged: True
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    capabilities:
+      - SYS_ADMIN
+    command: "/lib/systemd/systemd"
+    groups:
+      - thanos-rulers
+    networks:
+      - name: thanos
+    published_ports:
+      - "19195:19195"
+  - name: thanos-store
+    image: geerlingguy/docker-debian11-ansible:latest
+    pre_build_image: true
+    privileged: True
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    capabilities:
+      - SYS_ADMIN
+    command: "/lib/systemd/systemd"
+    groups:
+      - thanos-store
+    networks:
+      - name: thanos
+provisioner:
+  name: ansible
+  extra_vars: ansible_python_interpreter=/usr/bin/python3
+verifier:
+  name: ansible

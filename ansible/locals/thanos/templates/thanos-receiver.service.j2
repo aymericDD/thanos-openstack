@@ -1,0 +1,17 @@
+[Unit]
+Description=Thanos receiver
+After=network.target
+
+[Service]
+Type=simple
+PIDFile={{ thanos_receiver_pid_path }}
+User={{ thanos_user }}
+Group={{ thanos_group }}
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStart={{ thanos_bin_dir }}/thanos receive {{ thanos_receiver_flags }}
+
+SyslogIdentifier=thanos-receiver
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
